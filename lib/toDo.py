@@ -1,25 +1,27 @@
 NOTAS
-Module 14
-Definir tuteos (appointments_list, new_appointment)
-ID en appointments (main, new)
+* Definir tuteos (appointments_list, new_appointment)
 * Pantalla para type y date (resize showmodalbotomsheet)
-ids por siempre
+* ids por siempre
 * Organizar
 * Manu grabación info permanente
-* Doble tap
-* Texto abierto
-* Motivo de consulta
 
 TO DO
-# Menu ppl
-icons (https://www.youtube.com/watch?v=-6GBAGj-h4Q)
-# Gif de prueba.
-# Cita más reciente arriba.
-Edición citas
-Responsive
+* Texto abierto
+* Eliminación citas
+* Resto de Gifs
+* Gif bueno
+* Motivo de consulta
+* Doble tap
+* icons (https://www.youtube.com/watch?v=-6GBAGj-h4Q)
+* Edición citas
+* Responsive
 * Atenciones pendientes y pasadas
+* "Citas hoy" vs. "Historial de citas"
 
 DONE
+# Gif de prueba.
+# Cita más reciente arriba.
+# Menu ppl
 # Pick a date
 # Pick a type
 # hora
@@ -34,4 +36,3 @@ DONE
 # Quitar botón +
 
 IDEAS
-* "Citas hoy" vs. "Historial de citas"
