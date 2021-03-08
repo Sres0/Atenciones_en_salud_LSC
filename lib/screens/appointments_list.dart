@@ -7,10 +7,10 @@ import 'package:intl/intl.dart';
 
 class AppointmentsList extends StatefulWidget {
   final List<Appointment> appointments;
-  final Function deleteInformation;
+  final Function deleteAppointment;
   final Function urlGIF;
 
-  AppointmentsList(this.appointments, this.deleteInformation, this.urlGIF);
+  AppointmentsList(this.appointments, this.deleteAppointment, this.urlGIF);
 
   @override
   _AppointmentsListState createState() => _AppointmentsListState();
@@ -18,9 +18,9 @@ class AppointmentsList extends StatefulWidget {
 
 class _AppointmentsListState extends State<AppointmentsList> {
   List<Appointment> _appointments;
-  Function deleteInformation;
+  Function _deleteAppointment;
 
-  // _AppointmentsListState(this._appointments, this.deleteInformation);
+  // _AppointmentsListState(this._appointments, this.deleteAppointment);
 
   _iconForType(String type) {
     if (type.toUpperCase() == "MEDICINA GENERAL") {
@@ -35,7 +35,7 @@ class _AppointmentsListState extends State<AppointmentsList> {
   @override
   void initState() {
     _appointments = widget.appointments;
-    deleteInformation = widget.deleteInformation;
+    _deleteAppointment = widget.deleteAppointment;
     super.initState();
   }
 
@@ -77,7 +77,7 @@ class _AppointmentsListState extends State<AppointmentsList> {
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () =>
-                              deleteInformation(_appointments[index].id),
+                              _deleteAppointment(_appointments[index].id),
                         )),
                   ),
                 );
