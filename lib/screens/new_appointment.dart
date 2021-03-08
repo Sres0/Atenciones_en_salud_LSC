@@ -15,6 +15,7 @@ class _NewAppointmentState extends State<NewAppointment> {
   String _selectedType;
   // String _selectedType = "Odontología";
   final _place = TextEditingController();
+  final _additionalInformation = TextEditingController();
   DateTime _selectedDate;
   TimeOfDay _selectedTime;
 
@@ -36,14 +37,16 @@ class _NewAppointmentState extends State<NewAppointment> {
 
   void _submitData() {
     final selectedPlace = _place.text;
+    final selectedAdditionalInformation = _additionalInformation.text;
 
-    if (_selectedDate == null || _selectedTime == null || selectedPlace == "") {
+    if (_selectedDate == null || _selectedTime == null || selectedPlace == '') {
       return;
     }
 
     widget.newAppointment(
       _selectedType,
       selectedPlace,
+      selectedAdditionalInformation,
       _selectedDate,
       _selectedTime,
     );
@@ -52,11 +55,12 @@ class _NewAppointmentState extends State<NewAppointment> {
   }
 
   void _selectDate() {
+    DateTime dateTimeNow = DateTime.now();
     showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now().subtract(Duration(days: 900)),
-      lastDate: DateTime.now().add(Duration(days: 900)),
+      initialDate: dateTimeNow,
+      firstDate: dateTimeNow.subtract(Duration(days: 900)),
+      lastDate: dateTimeNow.add(Duration(days: 900)),
     ).then((selectedDate) {
       if (selectedDate == null) {
         return;
@@ -81,26 +85,26 @@ class _NewAppointmentState extends State<NewAppointment> {
 
   @override
   Widget build(BuildContext context) {
+    // final mediaQuery = MediaQuery.of(context);
     return Card(
       elevation: 10,
       child: Container(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             //SELECT PLACE
-            SizedBox(
-              height: 10.0,
-            ),
-            TextField(
-              style: Theme.of(context).textTheme.headline5,
-              keyboardType: TextInputType.text,
-              controller: _place,
-              decoration: InputDecoration(
-                labelText: "Lugar",
-                helperText: "Ejemplo: HGM, IPS CES Sabaneta",
+            Container(
+              child: TextField(
+                keyboardType: TextInputType.text,
+                controller: _place,
+                decoration: InputDecoration(
+                  labelText: "Lugar",
+                  helperText: "Ejemplo: HGM, IPS CES Sabaneta",
+                ),
+                onSubmitted: (_) => _submitData(),
               ),
-              onSubmitted: (_) => _submitData(),
+              padding: EdgeInsets.fromLTRB(5, 14, 5, 10),
             ),
 
             //SELECT TYPE OF ATTENTION
@@ -121,11 +125,9 @@ class _NewAppointmentState extends State<NewAppointment> {
                       width: 150, //and here
                       child: Text(
                         "Tipo de cita",
-                        style: TextStyle(color: Theme.of(context).primaryColor),
                         textAlign: TextAlign.start,
                       ),
                     ),
-                    style: Theme.of(context).textTheme.headline6,
                     value: _selectedType,
                     onChanged: (selection) {
                       setState(() {
@@ -138,9 +140,6 @@ class _NewAppointmentState extends State<NewAppointment> {
                         child: Text(
                           type,
                           textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
                         ),
                       );
                     }).toList(),
@@ -151,7 +150,6 @@ class _NewAppointmentState extends State<NewAppointment> {
 
             //DATE
             Container(
-              height: 50,
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -159,30 +157,41 @@ class _NewAppointmentState extends State<NewAppointment> {
                       _selectedDate == null
                           ? "Aún no has elegido fecha!"
                           : "Fecha: ${DateFormat.yMd().format(_selectedDate)}",
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.subtitle2.color,
-                      ),
                     ),
                   ),
-                  FlatButton(
+                  TextButton(
                     child: Text(
                       "Elegir fecha y hora",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    textColor: Theme.of(context).textTheme.subtitle2.color,
                     onPressed: _selectDate,
                   )
                 ],
               ),
             ),
+
+            //ADDITIONAL INFO
+            Container(
+              child: TextField(
+                keyboardType: TextInputType.text,
+                controller: _additionalInformation,
+                decoration: InputDecoration(
+                  labelText: 'Información adicional (opcional)',
+                  helperText: 'Ejemplo: Nombre del profesional de salud.',
+                ),
+                onSubmitted: (_) => _submitData(),
+              ),
+              padding: EdgeInsets.all(5),
+            ),
+
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  RaisedButton(
+                  ElevatedButton(
                     child: Text('Añadir cita'),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Theme.of(context).buttonColor,
                     onPressed: _submitData,
                   ),
                 ],

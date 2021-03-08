@@ -7,10 +7,10 @@ import 'package:intl/intl.dart';
 
 class AppointmentsList extends StatefulWidget {
   final List<Appointment> appointments;
-  final Function editInformation;
+  final Function deleteInformation;
   final Function urlGIF;
 
-  AppointmentsList(this.appointments, this.editInformation, this.urlGIF);
+  AppointmentsList(this.appointments, this.deleteInformation, this.urlGIF);
 
   @override
   _AppointmentsListState createState() => _AppointmentsListState();
@@ -18,9 +18,9 @@ class AppointmentsList extends StatefulWidget {
 
 class _AppointmentsListState extends State<AppointmentsList> {
   List<Appointment> _appointments;
-  Function editInformation;
+  Function deleteInformation;
 
-  // _AppointmentsListState(this._appointments, this.editInformation);
+  // _AppointmentsListState(this._appointments, this.deleteInformation);
 
   _iconForType(String type) {
     if (type.toUpperCase() == "MEDICINA GENERAL") {
@@ -30,32 +30,25 @@ class _AppointmentsListState extends State<AppointmentsList> {
     } else {
       return 'images/no_appointments.png';
     }
-
-    // return _image;
   }
 
   @override
   void initState() {
     _appointments = widget.appointments;
-    editInformation = widget.editInformation;
+    deleteInformation = widget.deleteInformation;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Theme.of(context).primaryColorLight),
       padding: const EdgeInsets.all(5),
-      margin: EdgeInsets.all(10),
       height: 395,
       child: _appointments.isEmpty
           ? NoAppointmentsYet()
           : ListView.builder(
               itemBuilder: (ctx, index) {
                 return GestureDetector(
-                  // onTap: () => print(_appointments[index].id),
                   onTap: () => widget.urlGIF(_appointments[index].type),
                   child: Card(
                     shape: RoundedRectangleBorder(
@@ -63,10 +56,11 @@ class _AppointmentsListState extends State<AppointmentsList> {
                     ),
                     elevation: 5,
                     margin: EdgeInsets.symmetric(
-                      horizontal: 3,
-                      vertical: 3,
+                      horizontal: 5,
+                      vertical: 5,
                     ),
                     child: ListTile(
+                        minVerticalPadding: 10,
                         leading: CircleAvatar(
                           radius: 30,
                           backgroundColor: Colors.grey,
@@ -76,16 +70,14 @@ class _AppointmentsListState extends State<AppointmentsList> {
                         ),
                         title: Text(
                           DateFormat.yMd().format(_appointments[index].date),
-                          style: Theme.of(context).textTheme.headline5,
                         ),
                         subtitle: Text(
-                          "${_appointments[index].type} - ${_appointments[index].place}\nHora: ${(_appointments[index].time).format(context)}",
+                          '${_appointments[index].type} - ${_appointments[index].place}\nHora: ${(_appointments[index].time).format(context)}',
                         ),
                         trailing: IconButton(
-                          icon: Icon(Icons.edit),
-                          color: Theme.of(context).primaryColorDark,
+                          icon: Icon(Icons.delete),
                           onPressed: () =>
-                              editInformation(_appointments[index].id),
+                              deleteInformation(_appointments[index].id),
                         )),
                   ),
                 );
@@ -109,7 +101,6 @@ class NoAppointmentsYet extends StatelessWidget {
       children: <Widget>[
         Text(
           "¡Aún no tienes citas!",
-          style: Theme.of(context).textTheme.headline4,
           textAlign: TextAlign.center,
         ),
         SizedBox(height: 20),

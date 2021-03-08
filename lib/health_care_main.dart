@@ -15,12 +15,13 @@ class HealthCareMain extends StatelessWidget {
         title: Text('Menú'),
       ),
       body: Center(
-        child: RaisedButton(
+        child: ElevatedButton(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('Atenciones en salud',
-                  // style: TextStyle(color: Colors.white)
-                  style: Theme.of(context).textTheme.headline5),
+              child: Text(
+                'Atenciones en salud',
+                // style: TextStyle(color: Colors.white)
+              ),
             ),
             onPressed: () {
               Navigator.push(

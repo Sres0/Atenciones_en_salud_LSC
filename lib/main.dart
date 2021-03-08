@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import './models/appointments.dart';
 import 'package:atenciones/screens/appointments_list.dart';
@@ -11,7 +12,11 @@ import './health_care_main.dart';
 // import 'dart:html';
 // import 'package:intl/intl.dart';
 
-void main() => runApp(AppLSCAES());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  runApp(AppLSCAES());
+}
 
 class AppLSCAES extends StatelessWidget {
   @override
@@ -19,46 +24,6 @@ class AppLSCAES extends StatelessWidget {
     return MaterialApp(
       title: 'Atenciones en salud',
       home: HealthCareMain(),
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        primaryColor: Colors.blue[600],
-        primaryColorDark: Colors.lightBlue[900],
-        primaryColorLight: Colors.blue[50],
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        appBarTheme: ThemeData.light().appBarTheme.copyWith(
-              color: Theme.of(context).primaryColor,
-              textTheme: TextTheme(
-                headline4:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              actionsIconTheme: Theme.of(context).iconTheme,
-            ),
-        textTheme: ThemeData.light().textTheme.copyWith(
-              headline1: TextStyle(color: Colors.white),
-              headline2: TextStyle(color: Colors.white),
-              headline3: TextStyle(color: Colors.white),
-              headline4: TextStyle(color: Colors.grey),
-              headline5: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.lightBlue[900],
-              ),
-              headline6: TextStyle(color: Colors.lightBlue[900]),
-              subtitle1: TextStyle(color: Colors.lightBlue[900]),
-              subtitle2: TextStyle(color: Colors.blue[600]),
-            ),
-        iconTheme: ThemeData.light().iconTheme.copyWith(
-              color: Colors.white,
-              // opacity: 10.5,
-            ),
-        buttonTheme: ButtonThemeData(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18.0),
-          ),
-          minWidth: 100.0,
-          height: 40.0,
-        ),
-      ),
-      // home: HealthAppointments(title: 'Atenciones en salud'),
     );
   }
 }
@@ -71,64 +36,22 @@ class HealthAppointments extends StatefulWidget {
 }
 
 class _HealthAppointmentsState extends State<HealthAppointments> {
-  // final List<Appointment> _allAppointments;
   int _contId = 0;
   String _gif = 'images/practice_GIF.gif';
-
-  final List<Appointment> _allAppointments = [
-    // Appointment(
-    //   id: 1,
-    //   date: DateTime.now().subtract(Duration(days: 5, hours: 2)),
-    //   time: TimeOfDay.now(),
-    //   type: "Medicina general",
-    //   place: "HGM",
-    // ),
-    // Appointment(
-    //   id: 2,
-    //   date: DateTime.now().subtract(Duration(days: 10, hours: 5)),
-    //   time: TimeOfDay.now(),
-    //   type: "Odontología",
-    //   place: "CES Sabaneta",
-    // ),
-    // Appointment(
-    //   id: 3,
-    //   date: DateTime.now().subtract(Duration(days: 20, hours: 15)),
-    //   time: TimeOfDay.now(),
-    //   type: "Medicina general",
-    //   place: "CVZ",
-    // ),
-    // Appointment(
-    //   id: 4,
-    //   date: DateTime.now().subtract(Duration(days: 50, hours: 1)),
-    //   time: TimeOfDay.now(),
-    //   type: "Medicina general",
-    //   place: "HGM",
-    // ),
-    // Appointment(
-    //   id: 5,
-    //   date: DateTime.now().subtract(Duration(days: 3, hours: 2)),
-    //   time: TimeOfDay.now(),
-    //   type: "Odontología",
-    //   place: "CES Sabaneta",
-    // ),
-    // Appointment(
-    //   id: 6,
-    //   date: DateTime.now().subtract(Duration(days: 0)),
-    //   time: TimeOfDay.now(),
-    //   type: "Odontología",
-    //   place: "CES Prado",
-    // ),
-  ];
-
-  // _HealthAppointmentsState(this._allAppointments, this._cont);
-  // _HealthAppointmentsState(this._allAppointments);
+  List<Appointment> _allAppointments = [];
 
   void _addNewAppointment(
-      String _type, String _place, DateTime _date, TimeOfDay _time) {
+    String _type,
+    String _place,
+    String _additionalInformation,
+    DateTime _date,
+    TimeOfDay _time,
+  ) {
     final newAppointment = Appointment(
       id: _contId,
       type: _type,
       place: _place,
+      additionalInformation: _additionalInformation,
       date: _date,
       time: _time,
     );
@@ -141,7 +64,7 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
     });
   }
 
-  void _editInformation(int id) {
+  void _deleteAppointment(int id) {
     setState(() {
       _allAppointments.removeWhere((appointment) => appointment.id == id);
     });
@@ -177,44 +100,48 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title,
-            style: Theme.of(context).appBarTheme.textTheme.headline4),
+        title: Text(
+          widget.title,
+        ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  AppointmentsList(
-                      _allAppointments, _editInformation, _imageForType),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    AppointmentsList(
+                        _allAppointments, _deleteAppointment, _imageForType),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: mediaQuery.size.height * 0.3,
+              padding: EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    child: ShowGIF(_gif),
+                  ),
+                  FloatingActionButton(
+                    child: Icon(
+                      Icons.add,
+                    ),
+                    onPressed: () => _startAddNewAppointment(context),
+                  )
                 ],
               ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  child: ShowGIF(_gif),
-                ),
-                FloatingActionButton(
-                  child: Icon(
-                    Icons.add,
-                    color: Theme.of(context).iconTheme.color,
-                  ),
-                  backgroundColor: Theme.of(context).primaryColor,
-                  onPressed: () => _startAddNewAppointment(context),
-                )
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

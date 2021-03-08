@@ -6,8 +6,6 @@ NOTAS
 * Manu grabación info permanente
 
 TO DO
-* Texto abierto
-* Eliminación citas
 * Resto de Gifs
 * Gif bueno
 * Motivo de consulta
@@ -17,8 +15,11 @@ TO DO
 * Responsive
 * Atenciones pendientes y pasadas
 * "Citas hoy" vs. "Historial de citas"
+* Confirmar eliminar cita
 
 DONE
+# * Eliminación citas
+# * Texto abierto
 # Gif de prueba.
 # Cita más reciente arriba.
 # Menu ppl
