@@ -104,120 +104,123 @@ class _NewAppointmentState extends State<NewAppointment> {
         padding: EdgeInsets.all(10),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               //GIFs
-              Container(
-                child: ShowGIF(_gif),
-              ),
+              ShowGIF(_gif),
 
               //SELECT TYPE OF ATTENTION -- No double tap yet
-              SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                margin: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(color: Theme.of(context).primaryColor),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton(
-                      hint: Container(
-                        width: 150, //and here
-                        child: GestureDetector(
-                          child: Text(
-                            "Tipo de cita",
-                            textAlign: TextAlign.start,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      border: Border.all(color: Theme.of(context).primaryColor),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          hint: Container(
+                            width: 150, //and here
+                            child: GestureDetector(
+                              child: Text(
+                                "Tipo de cita",
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
                           ),
+                          onTap: () {
+                            _gifForNAField('type');
+                          },
+                          value: _selectedType,
+                          onChanged: (selection) {
+                            setState(() {
+                              _selectedType = selection;
+                            });
+                          },
+                          items: types.map((String type) {
+                            return DropdownMenuItem(
+                              value: type,
+                              child: Text(
+                                type,
+                                textAlign: TextAlign.start,
+                              ),
+                            );
+                          }).toList(),
                         ),
+                      ),
+                    ),
+                  ),
+
+                  //DATE
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          _selectedDate == null
+                              ? "Aún no has elegido fecha!"
+                              : "Fecha: ${DateFormat.yMd().format(_selectedDate)}",
+                        ),
+                        TextButton(
+                          child: GestureDetector(
+                            child: Text(
+                              "Elegir fecha y hora",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            onDoubleTap: () => _selectDate(),
+                          ),
+                          onPressed: () {
+                            _gifForNAField('date');
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+
+                  //SELECT PLACE -- No double tap yet
+                  Container(
+                    child: TextField(
+                      onTap: () => _gifForNAField('place'),
+                      keyboardType: TextInputType.text,
+                      controller: _place,
+                      decoration: InputDecoration(
+                        labelText: "Lugar",
+                        helperText: "Ejemplo: HGM, IPS CES Sabaneta",
+                      ),
+                    ),
+                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  ),
+
+                  //ADDITIONAL INFO -- No double tap yet
+                  Container(
+                    child: TextField(
+                      keyboardType: TextInputType.text,
+                      controller: _additionalInformation,
+                      decoration: InputDecoration(
+                        labelText: 'Información adicional (opcional)',
+                        helperText: 'Ejemplo: Nombre del profesional de salud.',
                       ),
                       onTap: () {
-                        _gifForNAField('type');
+                        _gifForNAField('additionalInformation');
                       },
-                      value: _selectedType,
-                      onChanged: (selection) {
-                        setState(() {
-                          _selectedType = selection;
-                        });
-                      },
-                      items: types.map((String type) {
-                        return DropdownMenuItem(
-                          value: type,
-                          child: Text(
-                            type,
-                            textAlign: TextAlign.start,
-                          ),
-                        );
-                      }).toList(),
                     ),
+                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                   ),
-                ),
+                ],
               ),
 
-              //DATE
               Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      _selectedDate == null
-                          ? "Aún no has elegido fecha!"
-                          : "Fecha: ${DateFormat.yMd().format(_selectedDate)}",
-                    ),
-                    TextButton(
-                      child: GestureDetector(
-                        child: Text(
-                          "Elegir fecha y hora",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onDoubleTap: () => _selectDate(),
-                      ),
-                      onPressed: () {
-                        _gifForNAField('date');
-                      },
-                    )
-                  ],
+                padding: EdgeInsets.all(5),
+                child: ElevatedButton(
+                  child: Text('Añadir cita'),
+                  onPressed: _submitData,
                 ),
-              ),
-
-              //SELECT PLACE -- No double tap yet
-              Container(
-                child: TextField(
-                  onTap: () => _gifForNAField('place'),
-                  keyboardType: TextInputType.text,
-                  controller: _place,
-                  decoration: InputDecoration(
-                    labelText: "Lugar",
-                    helperText: "Ejemplo: HGM, IPS CES Sabaneta",
-                  ),
-                ),
-                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-              ),
-
-              //ADDITIONAL INFO -- No double tap yet
-              Container(
-                child: TextField(
-                  keyboardType: TextInputType.text,
-                  controller: _additionalInformation,
-                  decoration: InputDecoration(
-                    labelText: 'Información adicional (opcional)',
-                    helperText: 'Ejemplo: Nombre del profesional de salud.',
-                  ),
-                  onTap: () {
-                    _gifForNAField('additionalInformation');
-                  },
-                ),
-                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-              ),
-
-              ElevatedButton(
-                child: Text('Añadir cita'),
-                onPressed: _submitData,
               ),
             ],
           ),
@@ -227,6 +230,75 @@ class _NewAppointmentState extends State<NewAppointment> {
   }
 }
 
+// class ShowGIF extends StatefulWidget {
+//   final String gif;
+
+//   ShowGIF(this.gif);
+
+//   @override
+//   _ShowGIFState createState() => _ShowGIFState();
+// }
+
+// class _ShowGIFState extends State<ShowGIF> with TickerProviderStateMixin {
+//   GifController controller;
+//   String gif;
+
+//   @override
+//   void initState() {
+//     controller = GifController(vsync: this);
+//     super.initState();
+//   }
+
+//   playGif(String gifToPlay) {
+//     setState(() {
+//       gif = gifToPlay;
+//     });
+//     controller.value = 0;
+//     controller.animateTo(23,
+//         duration: Duration(milliseconds: (140 * 25).toInt()));
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       child: Container(
+//         height: 170,
+//         padding: EdgeInsets.only(right: 20.0),
+//         child: Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           crossAxisAlignment: CrossAxisAlignment.end,
+//           children: [
+//             Card(
+//               child: GifImage(
+//                 controller: controller,
+//                 image: AssetImage(widget.gif),
+//               ),
+//               elevation: 7,
+//             ),
+//           ],
+//         ),
+//       ),
+//       onDoubleTap: playGif(widget.gif),
+//     );
+//     // );
+//   }
+// }
+
+//     GestureDetector(
+//       onTap: playGif(widget.gif),
+//       child: Card(
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(20.0),
+//         ),
+//         child: GifImage(
+//           controller: controller,
+//           image: AssetImage(widget.gif),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 class ShowGIF extends StatelessWidget {
   final String gif;
 
@@ -235,7 +307,7 @@ class ShowGIF extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(top: 10, bottom: 10),
       child: ClipRRect(
         child: Image.asset(gif),
         borderRadius: BorderRadius.circular(10),

@@ -41,4 +41,5 @@ IDEAS
 BUGS
 * Elección tipo
 * Botón flotante
+* gif en add new
 # * Entrada sin citas

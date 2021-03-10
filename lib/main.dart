@@ -113,7 +113,9 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
 
   void _deleteAppointment(int id) {
     setState(() {
+      //Not great but works
       pastAppointments.removeWhere((appointment) => appointment.id == id);
+      presentAppointments.removeWhere((appointment) => appointment.id == id);
     });
     return;
   }
@@ -147,6 +149,7 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
 
   _selectAppointmentList(int index) {
     setState(() {
+      _gif = 'images/practice2_GIF.gif';
       if (index == 0) {
         renderList = presentAppointments;
         _bottomNavigationIndex = 0;
@@ -191,15 +194,30 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
                   Container(
                     child: ShowGIF(_gif),
                   ),
-                  FloatingActionButton(
-                    elevation: 5,
-                    child: GestureDetector(
-                      child: Icon(Icons.add),
-                      onDoubleTap: () => _startAddNewAppointment(context),
-                    ),
-                    onPressed: () {
-                      _gifForType('Medicina general');
-                    },
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      FloatingActionButton(
+                        elevation: 5,
+                        child: GestureDetector(
+                          child: Icon(Icons.add),
+                          onDoubleTap: () => _startAddNewAppointment(context),
+                        ),
+                        onPressed: () {
+                          _gifForType('Medicina general');
+                        },
+                      ),
+                      FloatingActionButton(
+                        elevation: 5,
+                        child: GestureDetector(
+                          child: Icon(Icons.check),
+                          onDoubleTap: () => null,
+                        ),
+                        onPressed: () {
+                          _gifForType('Medicina general');
+                        },
+                      ),
+                    ],
                   )
                 ],
               ),
