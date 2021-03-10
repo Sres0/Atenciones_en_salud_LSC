@@ -37,3 +37,8 @@ DONE
 # Quitar botón +
 
 IDEAS
+
+BUGS
+* Elección tipo
+* Botón flotante
+# * Entrada sin citas

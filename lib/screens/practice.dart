@@ -1,160 +1,201 @@
-// import 'package:atenciones/main.dart';
-// import 'package:atenciones/screens/show_images.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../screens/appointments_list.dart';
 import '../models/appointments.dart';
-import 'package:intl/intl.dart';
+// import './tabs_screen.dart';
+import '../screens/new_appointment.dart';
+// import './screens/tabs_screen.dart';
+// import './screens/show_gif.dart';
+import '../health_care_main.dart';
 
-class AppointmentsList extends StatefulWidget {
-  final List<Appointment> appointments;
-  final Function deleteAppointment;
-  final Function gifForType;
+// import 'package:atenciones/screens/practice.dart';
 
-  AppointmentsList(this.appointments, this.deleteAppointment, this.gifForType);
+// import 'dart:html';
+// import 'package:intl/intl.dart';
 
-  @override
-  _AppointmentsListState createState() => _AppointmentsListState();
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  runApp(AppLSCAES());
 }
 
-class _AppointmentsListState extends State<AppointmentsList> {
-  List<Appointment> _appointments;
-  Function _deleteAppointment;
-
-  _iconForType(String type) {
-    if (type == 'Medicina general') {
-      return 'images/general_medicine.jpg';
-    } else if (type == 'Odontología') {
-      return 'images/odontology.jpg';
-    } else {
-      return 'images/no_appointments.png';
-    }
+class AppLSCAES extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Atenciones en salud',
+      home: HealthCareMain(),
+    );
   }
+}
+
+class HealthAppointments extends StatefulWidget {
+  final String title = "Atenciones en salud";
 
   @override
-  void initState() {
-    _appointments = widget.appointments;
-    _deleteAppointment = widget.deleteAppointment;
-    super.initState();
+  _HealthAppointmentsState createState() => _HealthAppointmentsState();
+}
+
+class _HealthAppointmentsState extends State<HealthAppointments> {
+  int _contId = 4;
+  // int _contId = 0;
+  String _gif = 'images/practice_GIF.gif';
+
+  List<Appointment> presentAppointments = [
+    Appointment(
+      id: 0,
+      type: 'Medicina general',
+      place: 'HGM',
+      additionalInformation: ':)',
+      date: DateTime.now().add(Duration(hours: 2)),
+      time: TimeOfDay.now(),
+    ),
+    Appointment(
+      id: 2,
+      type: 'Odontología',
+      place: 'HGM',
+      additionalInformation: ':)',
+      date: DateTime.now().add(Duration(days: 11)),
+      time: TimeOfDay.now(),
+    ),
+  ];
+
+  List<Appointment> pastAppointments = [
+    Appointment(
+      id: 1,
+      type: 'Medicina general',
+      place: 'CES Sabaneta',
+      additionalInformation: ':)',
+      date: DateTime.now().subtract(Duration(days: 12)),
+      time: TimeOfDay.now(),
+    ),
+    Appointment(
+      id: 3,
+      type: 'Odontología',
+      place: 'CES Sabaneta',
+      additionalInformation: ':)',
+      date: DateTime.now().subtract(Duration(days: 4)),
+      time: TimeOfDay.now(),
+    ),
+  ];
+
+  void _addNewAppointment(
+    String _type,
+    String _place,
+    String _additionalInformation,
+    DateTime _date,
+    TimeOfDay _time,
+  ) {
+    final newAppointment = Appointment(
+      id: _contId,
+      type: _type,
+      place: _place,
+      additionalInformation: _additionalInformation,
+      date: _date,
+      time: _time,
+    );
+
+    _contId++;
+
+    setState(() {
+      //Solo past y present cuando se añade, no "actualiza"
+      if (_date.isAfter(DateTime.now())) {
+        presentAppointments.add(newAppointment);
+      } else {
+        pastAppointments.add(newAppointment);
+      }
+      pastAppointments.sort((a, b) => a.date.compareTo(b.date));
+      presentAppointments.sort((a, b) => a.date.compareTo(b.date));
+    });
+  }
+
+  void _deleteAppointment(int id) {
+    setState(() {
+      pastAppointments.removeWhere((appointment) => appointment.id == id);
+    });
+    return;
+  }
+
+  void _startAddNewAppointment(BuildContext ctx) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      context: ctx,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          child: NewAppointment(_addNewAppointment),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
+  }
+
+  void _gifForType(String type) {
+    setState(() {
+      if (type == 'Medicina general') {
+        _gif = 'images/practice2_GIF.gif';
+      } else {
+        _gif = 'images/practice_GIF.gif';
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      height: 395,
-      child: _appointments.isEmpty
-          ? NoAppointmentsYet()
-          : ListView.builder(
-              itemBuilder: (ctx, index) {
-                return GestureDetector(
-                  onTap: () => widget.gifForType(_appointments[index].type),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    elevation: 5,
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 5,
-                      vertical: 3,
-                    ),
-                    child: ListTile(
-                        minVerticalPadding: 10,
-                        leading: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.grey,
-                          backgroundImage: AssetImage(
-                              _iconForType(_appointments[index].type)
-                                  .toString()),
-                        ),
-                        title: Text(
-                          DateFormat.yMd().format(_appointments[index].date),
-                        ),
-                        subtitle: Text(
-                          '${_appointments[index].type} - ${_appointments[index].place}\nHora: ${(_appointments[index].time).format(context)}',
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () =>
-                              _deleteAppointment(_appointments[index].id),
-                        )),
+    final mediaQuery = MediaQuery.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.title,
+        ),
+      ),
+      body: SafeArea(
+        // child: TabsScreen(),
+        //   ),
+        // );
+        child: Column(
+          //No sé si necesito esto
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    AppointmentsList(
+                        pastAppointments, _deleteAppointment, _gifForType),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: mediaQuery.size.height * 0.25,
+              padding: EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    child: ShowGIF(_gif),
                   ),
-                );
-              },
-              itemCount: _appointments.length,
+                  FloatingActionButton(
+                    elevation: 10,
+                    child: GestureDetector(
+                      child: Icon(Icons.add),
+                      onDoubleTap: () => _startAddNewAppointment(context),
+                    ),
+                    onPressed: () {
+                      _gifForType('Medicina general');
+                    },
+                  )
+                ],
+              ),
             ),
-    );
-  }
-}
-
-class NoAppointmentsYet extends StatelessWidget {
-  const NoAppointmentsYet({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Text(
-          "¡Aún no tienes citas!",
-          textAlign: TextAlign.center,
+          ],
         ),
-        SizedBox(height: 20),
-        Container(
-          height: 150,
-          child: Image.asset(
-            "images/no_appointments.png",
-            fit: BoxFit.scaleDown,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class AppointmentCard extends StatelessWidget {
-  final int index;
-  final List<Appointment> appointments;
-  final Function gifForType;
-  final Function iconForType;
-  final Function deleteAppointment;
-
-  AppointmentCard(this.index, this.appointments, this.gifForType,
-      this.deleteAppointment, this.iconForType);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => gifForType(appointments[index].type),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        elevation: 5,
-        margin: EdgeInsets.symmetric(
-          horizontal: 5,
-          vertical: 3,
-        ),
-        child: ListTile(
-            minVerticalPadding: 10,
-            leading: CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.grey,
-              backgroundImage:
-                  AssetImage(iconForType(appointments[index].type).toString()),
-            ),
-            title: Text(
-              DateFormat.yMd().format(appointments[index].date),
-            ),
-            subtitle: Text(
-              '${appointments[index].type} - ${appointments[index].place}\nHora: ${(appointments[index].time).format(context)}',
-            ),
-            trailing: IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () => deleteAppointment(appointments[index].id),
-            )),
       ),
     );
   }

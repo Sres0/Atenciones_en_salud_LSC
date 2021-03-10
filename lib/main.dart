@@ -38,6 +38,7 @@ class HealthAppointments extends StatefulWidget {
 
 class _HealthAppointmentsState extends State<HealthAppointments> {
   int _contId = 4;
+  int _bottomNavigationIndex = 0;
   // int _contId = 0;
   String _gif = 'images/practice_GIF.gif';
 
@@ -78,6 +79,7 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
       time: TimeOfDay.now(),
     ),
   ];
+  List<Appointment> renderList = [];
 
   void _addNewAppointment(
     String _type,
@@ -143,6 +145,24 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
     });
   }
 
+  _selectAppointmentList(int index) {
+    setState(() {
+      if (index == 0) {
+        renderList = presentAppointments;
+        _bottomNavigationIndex = 0;
+      } else {
+        renderList = pastAppointments;
+        _bottomNavigationIndex = 1;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    renderList = presentAppointments;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -160,28 +180,19 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
         child: Column(
           //No sé si necesito esto
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    AppointmentsList(pastAppointments, presentAppointments,
-                        _deleteAppointment, _gifForType),
-                  ],
-                ),
-              ),
-            ),
+            //GIF and add
             Container(
               height: mediaQuery.size.height * 0.25,
-              padding: EdgeInsets.all(20),
+              // padding: EdgeInsets.all(5),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
                     child: ShowGIF(_gif),
                   ),
                   FloatingActionButton(
-                    elevation: 10,
+                    elevation: 5,
                     child: GestureDetector(
                       child: Icon(Icons.add),
                       onDoubleTap: () => _startAddNewAppointment(context),
@@ -193,8 +204,36 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
                 ],
               ),
             ),
+
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    AppointmentsList(
+                        renderList, _deleteAppointment, _gifForType),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 5,
+        onTap: _selectAppointmentList,
+        currentIndex: _bottomNavigationIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.access_time),
+            label: 'Pendientes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inventory),
+            label: 'Historial',
+          ),
+        ],
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
       ),
     );
   }
