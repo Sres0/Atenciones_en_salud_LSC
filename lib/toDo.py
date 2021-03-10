@@ -6,18 +6,18 @@ NOTAS
 * Manu grabación info permanente
 
 TO DO
-* Resto de Gifs
 * Gif bueno
 * Motivo de consulta
 * Doble tap
 * icons (https://www.youtube.com/watch?v=-6GBAGj-h4Q)
 * Edición citas
 * Responsive
-* Atenciones pendientes y pasadas
 * "Citas hoy" vs. "Historial de citas"
 * Confirmar eliminar cita
+* Organizar GIFs (tamaño, puesto)
 
 DONE
+# * Resto de Gifs
 # * Eliminación citas
 # * Texto abierto
 # Gif de prueba.

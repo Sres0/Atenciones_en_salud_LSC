@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import './models/appointments.dart';
-import 'package:atenciones/screens/appointments_list.dart';
-import 'package:atenciones/screens/new_appointment.dart';
-// import 'package:atenciones/screens/show_gif.dart';
+import './screens/appointments_list.dart';
+import './screens/new_appointment.dart';
+// import './screens/tabs_screen.dart';
+// import './screens/show_gif.dart';
 import './health_care_main.dart';
 
 // import 'package:atenciones/screens/practice.dart';
@@ -88,9 +89,9 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
     );
   }
 
-  void _imageForType(String type) {
+  void _gifForType(String type) {
     setState(() {
-      if (type.toUpperCase() == 'MEDICINA GENERAL') {
+      if (type == 'Medicina general') {
         _gif = 'images/practice2_GIF.gif';
       } else {
         _gif = 'images/practice_GIF.gif';
@@ -109,20 +110,24 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
         ),
       ),
       body: SafeArea(
+        // child: TabsScreen(),
+        //   ),
+        // );
         child: Column(
+          //No sé si necesito esto
           children: [
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
                     AppointmentsList(
-                        _allAppointments, _deleteAppointment, _imageForType),
+                        _allAppointments, _deleteAppointment, _gifForType),
                   ],
                 ),
               ),
             ),
             Container(
-              height: mediaQuery.size.height * 0.3,
+              height: mediaQuery.size.height * 0.25,
               padding: EdgeInsets.all(20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,10 +137,14 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
                     child: ShowGIF(_gif),
                   ),
                   FloatingActionButton(
-                    child: Icon(
-                      Icons.add,
+                    elevation: 10,
+                    child: GestureDetector(
+                      child: Icon(Icons.add),
+                      onDoubleTap: () => _startAddNewAppointment(context),
                     ),
-                    onPressed: () => _startAddNewAppointment(context),
+                    onPressed: () {
+                      _gifForType('Medicina general');
+                    },
                   )
                 ],
               ),
