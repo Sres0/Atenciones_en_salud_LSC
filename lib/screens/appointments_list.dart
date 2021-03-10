@@ -6,11 +6,13 @@ import '../models/appointments.dart';
 import 'package:intl/intl.dart';
 
 class AppointmentsList extends StatefulWidget {
-  final List<Appointment> appointments;
+  final List<Appointment> pastAppointments;
+  final List<Appointment> presentAppointments;
   final Function deleteAppointment;
   final Function gifForType;
 
-  AppointmentsList(this.appointments, this.deleteAppointment, this.gifForType);
+  AppointmentsList(this.pastAppointments, this.presentAppointments,
+      this.deleteAppointment, this.gifForType);
 
   @override
   _AppointmentsListState createState() => _AppointmentsListState();
@@ -32,14 +34,14 @@ class _AppointmentsListState extends State<AppointmentsList> {
     return Container(
       padding: const EdgeInsets.all(5),
       height: 395,
-      child: widget.appointments.isEmpty
+      child: widget.pastAppointments.isEmpty
           ? NoAppointmentsYet()
           : ListView.builder(
               itemBuilder: (ctx, index) {
-                return AppointmentCard(index, widget.appointments,
+                return AppointmentCard(index, widget.pastAppointments,
                     widget.gifForType, widget.deleteAppointment, _iconForType);
               },
-              itemCount: widget.appointments.length,
+              itemCount: widget.pastAppointments.length,
             ),
     );
   }

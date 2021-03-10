@@ -37,9 +37,47 @@ class HealthAppointments extends StatefulWidget {
 }
 
 class _HealthAppointmentsState extends State<HealthAppointments> {
-  int _contId = 0;
+  int _contId = 4;
+  // int _contId = 0;
   String _gif = 'images/practice_GIF.gif';
-  List<Appointment> _allAppointments = [];
+
+  List<Appointment> presentAppointments = [
+    Appointment(
+      id: 0,
+      type: 'Medicina general',
+      place: 'HGM',
+      additionalInformation: ':)',
+      date: DateTime.now().add(Duration(hours: 2)),
+      time: TimeOfDay.now(),
+    ),
+    Appointment(
+      id: 2,
+      type: 'Odontología',
+      place: 'HGM',
+      additionalInformation: ':)',
+      date: DateTime.now().add(Duration(days: 11)),
+      time: TimeOfDay.now(),
+    ),
+  ];
+
+  List<Appointment> pastAppointments = [
+    Appointment(
+      id: 1,
+      type: 'Medicina general',
+      place: 'CES Sabaneta',
+      additionalInformation: ':)',
+      date: DateTime.now().subtract(Duration(days: 12)),
+      time: TimeOfDay.now(),
+    ),
+    Appointment(
+      id: 3,
+      type: 'Odontología',
+      place: 'CES Sabaneta',
+      additionalInformation: ':)',
+      date: DateTime.now().subtract(Duration(days: 4)),
+      time: TimeOfDay.now(),
+    ),
+  ];
 
   void _addNewAppointment(
     String _type,
@@ -60,14 +98,20 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
     _contId++;
 
     setState(() {
-      _allAppointments.add(newAppointment);
-      _allAppointments.sort((a, b) => a.date.compareTo(b.date));
+      //Solo past y present cuando se añade, no "actualiza"
+      if (_date.isAfter(DateTime.now())) {
+        presentAppointments.add(newAppointment);
+      } else {
+        pastAppointments.add(newAppointment);
+      }
+      pastAppointments.sort((a, b) => a.date.compareTo(b.date));
+      presentAppointments.sort((a, b) => a.date.compareTo(b.date));
     });
   }
 
   void _deleteAppointment(int id) {
     setState(() {
-      _allAppointments.removeWhere((appointment) => appointment.id == id);
+      pastAppointments.removeWhere((appointment) => appointment.id == id);
     });
     return;
   }
@@ -120,8 +164,8 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    AppointmentsList(
-                        _allAppointments, _deleteAppointment, _gifForType),
+                    AppointmentsList(pastAppointments, presentAppointments,
+                        _deleteAppointment, _gifForType),
                   ],
                 ),
               ),
