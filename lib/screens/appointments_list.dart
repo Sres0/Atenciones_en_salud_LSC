@@ -1,6 +1,9 @@
 // import 'package:atenciones/main.dart';
 // import 'package:atenciones/screens/show_images.dart';
 
+// import 'package:atenciones/screens/new_appointment.dart';
+
+import 'appointment_main.dart';
 import 'package:flutter/material.dart';
 import '../models/appointments.dart';
 import 'package:intl/intl.dart';
@@ -87,6 +90,11 @@ class AppointmentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => gifForType(appointments[index].type),
+      onDoubleTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  AppointmentMain(appointment: appointments[index]))),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -97,23 +105,27 @@ class AppointmentCard extends StatelessWidget {
           vertical: 3,
         ),
         child: ListTile(
-            minVerticalPadding: 10,
-            leading: CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.grey,
-              backgroundImage:
-                  AssetImage(iconForType(appointments[index].type).toString()),
-            ),
-            title: Text(
-              DateFormat.yMd().format(appointments[index].date),
-            ),
-            subtitle: Text(
-              '${appointments[index].type} - ${appointments[index].place}\nHora: ${(appointments[index].time).format(context)}',
-            ),
-            trailing: IconButton(
+          minVerticalPadding: 10,
+          leading: CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.grey,
+            backgroundImage:
+                AssetImage(iconForType(appointments[index].type).toString()),
+          ),
+          title: Text(
+            DateFormat.yMd().format(appointments[index].date),
+          ),
+          subtitle: Text(
+            '${appointments[index].type} - ${appointments[index].place}\nHora: ${(appointments[index].time).format(context)}',
+          ),
+          trailing: GestureDetector(
+            child: IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () => deleteAppointment(appointments[index].id),
-            )),
+              onPressed: () => gifForType(appointments[index].type),
+            ),
+            onDoubleTap: () => deleteAppointment(appointments[index].id),
+          ),
+        ),
       ),
     );
   }

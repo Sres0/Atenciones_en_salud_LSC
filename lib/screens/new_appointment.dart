@@ -106,113 +106,120 @@ class _NewAppointmentState extends State<NewAppointment> {
           child: Column(
             // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              //GIFs
-              ShowGIF(_gif),
-
               //SELECT TYPE OF ATTENTION -- No double tap yet
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      border: Border.all(color: Theme.of(context).primaryColor),
+              SafeArea(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        border:
+                            Border.all(color: Theme.of(context).primaryColor),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            isExpanded: false,
+                            hint: Container(
+                              width: 150, //and here
+                              child: GestureDetector(
+                                child: Text(
+                                  "Tipo de cita",
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              _gifForNAField('type');
+                            },
+                            value: _selectedType,
+                            onChanged: (selection) {
+                              setState(() {
+                                _selectedType = selection;
+                              });
+                            },
+                            items: types.map((String type) {
+                              return DropdownMenuItem(
+                                value: type,
+                                child: Text(
+                                  type,
+                                  textAlign: TextAlign.start,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton(
-                          hint: Container(
-                            width: 150, //and here
+
+                    //DATE
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            _selectedDate == null
+                                ? "Aún no has elegido fecha!"
+                                : "Fecha: ${DateFormat.yMd().format(_selectedDate)}",
+                          ),
+                          TextButton(
                             child: GestureDetector(
                               child: Text(
-                                "Tipo de cita",
-                                textAlign: TextAlign.start,
+                                "Elegir fecha y hora",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
+                              onDoubleTap: () => _selectDate(),
                             ),
-                          ),
-                          onTap: () {
-                            _gifForNAField('type');
-                          },
-                          value: _selectedType,
-                          onChanged: (selection) {
-                            setState(() {
-                              _selectedType = selection;
-                            });
-                          },
-                          items: types.map((String type) {
-                            return DropdownMenuItem(
-                              value: type,
-                              child: Text(
-                                type,
-                                textAlign: TextAlign.start,
-                              ),
-                            );
-                          }).toList(),
+                            onPressed: () {
+                              _gifForNAField('date');
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+
+                    //SELECT PLACE -- No double tap yet
+                    Container(
+                      child: TextField(
+                        onTap: () => _gifForNAField('place'),
+                        keyboardType: TextInputType.text,
+                        controller: _place,
+                        decoration: InputDecoration(
+                          labelText: "Lugar",
+                          helperText: "Ejemplo: HGM, IPS CES Sabaneta",
                         ),
                       ),
+                      padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                     ),
-                  ),
 
-                  //DATE
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          _selectedDate == null
-                              ? "Aún no has elegido fecha!"
-                              : "Fecha: ${DateFormat.yMd().format(_selectedDate)}",
+                    //ADDITIONAL INFO -- No double tap yet
+                    Container(
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        controller: _additionalInformation,
+                        decoration: InputDecoration(
+                          labelText: 'Información adicional (opcional)',
+                          helperText:
+                              'Ejemplo: Nombre del profesional de salud.',
                         ),
-                        TextButton(
-                          child: GestureDetector(
-                            child: Text(
-                              "Elegir fecha y hora",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            onDoubleTap: () => _selectDate(),
-                          ),
-                          onPressed: () {
-                            _gifForNAField('date');
-                          },
-                        )
-                      ],
-                    ),
-                  ),
-
-                  //SELECT PLACE -- No double tap yet
-                  Container(
-                    child: TextField(
-                      onTap: () => _gifForNAField('place'),
-                      keyboardType: TextInputType.text,
-                      controller: _place,
-                      decoration: InputDecoration(
-                        labelText: "Lugar",
-                        helperText: "Ejemplo: HGM, IPS CES Sabaneta",
+                        onTap: () {
+                          _gifForNAField('additionalInformation');
+                        },
                       ),
+                      padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                     ),
-                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  ),
+                  ],
+                ),
+              ),
 
-                  //ADDITIONAL INFO -- No double tap yet
-                  Container(
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      controller: _additionalInformation,
-                      decoration: InputDecoration(
-                        labelText: 'Información adicional (opcional)',
-                        helperText: 'Ejemplo: Nombre del profesional de salud.',
-                      ),
-                      onTap: () {
-                        _gifForNAField('additionalInformation');
-                      },
-                    ),
-                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  ),
-                ],
+              //GIFs
+              Container(
+                child: ShowGIF(_gif),
+                height: MediaQuery.of(context).size.height * 0.3,
               ),
 
               Container(

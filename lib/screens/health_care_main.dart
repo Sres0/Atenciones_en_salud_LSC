@@ -2,6 +2,7 @@ import 'package:atenciones/main.dart';
 import 'package:flutter/material.dart';
 
 class HealthCareMain extends StatelessWidget {
+  static const id = 'health_care_main';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,10 +25,7 @@ class HealthCareMain extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HealthAppointments()));
+              Navigator.pushNamed(context, HealthAppointments.id);
             }),
       ),
     );

@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import './models/appointments.dart';
 import './screens/appointments_list.dart';
 import './screens/new_appointment.dart';
-// import './screens/tabs_screen.dart';
+import 'screens/appointment_main.dart';
 // import './screens/show_gif.dart';
-import './health_care_main.dart';
+import './screens/health_care_main.dart';
 
 // import 'package:atenciones/screens/practice.dart';
 
@@ -23,13 +23,19 @@ class AppLSCAES extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Atenciones en salud',
-      home: HealthCareMain(),
-    );
+        title: 'Atenciones en salud',
+        home: HealthCareMain(),
+        initialRoute: HealthCareMain.id,
+        routes: {
+          HealthCareMain.id: (context) => HealthCareMain(),
+          HealthAppointments.id: (context) => HealthAppointments(),
+          AppointmentMain.id: (context) => AppointmentMain(),
+        });
   }
 }
 
 class HealthAppointments extends StatefulWidget {
+  static const id = 'health_appointments';
   final String title = "Atenciones en salud";
 
   @override
@@ -149,7 +155,7 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
 
   _selectAppointmentList(int index) {
     setState(() {
-      _gif = 'images/practice2_GIF.gif';
+      _gif = 'images/practice_GIF.gif';
       if (index == 0) {
         renderList = presentAppointments;
         _bottomNavigationIndex = 0;
@@ -168,8 +174,6 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -184,44 +188,8 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
           //No sé si necesito esto
           children: [
             //GIF and add
-            Container(
-              height: mediaQuery.size.height * 0.25,
-              // padding: EdgeInsets.all(5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    child: ShowGIF(_gif),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      FloatingActionButton(
-                        elevation: 5,
-                        child: GestureDetector(
-                          child: Icon(Icons.add),
-                          onDoubleTap: () => _startAddNewAppointment(context),
-                        ),
-                        onPressed: () {
-                          _gifForType('Medicina general');
-                        },
-                      ),
-                      FloatingActionButton(
-                        elevation: 5,
-                        child: GestureDetector(
-                          child: Icon(Icons.check),
-                          onDoubleTap: () => null,
-                        ),
-                        onPressed: () {
-                          _gifForType('Medicina general');
-                        },
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
+            GifAndButtons(_gif, _startAddNewAppointment, Icon(Icons.add),
+                () => {}, Icon(Icons.check), _gifForType),
 
             Expanded(
               child: SingleChildScrollView(
@@ -252,6 +220,64 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
         ],
         selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.grey,
+      ),
+    );
+  }
+}
+
+class GifAndButtons extends StatefulWidget {
+  final String gif;
+  final Function topButtonFunction;
+  final Icon topButtonIcon;
+  final Function bottomButtonFunction;
+  final Icon bottomButtonIcon;
+  final Function gifFunction;
+
+  GifAndButtons(this.gif, this.topButtonFunction, this.topButtonIcon,
+      this.bottomButtonFunction, this.bottomButtonIcon, this.gifFunction);
+
+  @override
+  _GifAndButtonsState createState() => _GifAndButtonsState();
+}
+
+class _GifAndButtonsState extends State<GifAndButtons> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.25,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            child: ShowGIF(widget.gif),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              FloatingActionButton(
+                elevation: 5,
+                child: GestureDetector(
+                  child: widget.topButtonIcon,
+                  onDoubleTap: () => widget.topButtonFunction(context),
+                ),
+                onPressed: () {
+                  widget.gifFunction('Medicina general');
+                },
+              ),
+              FloatingActionButton(
+                elevation: 5,
+                child: GestureDetector(
+                  child: widget.bottomButtonIcon,
+                  onDoubleTap: () => null,
+                ),
+                onPressed: () {
+                  widget.gifFunction('Odontología');
+                },
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
