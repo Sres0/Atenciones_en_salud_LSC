@@ -37,6 +37,7 @@ DONE
 # Quitar botón +
 
 IDEAS
+* email manugarcia100@hotmail.com
 
 BUGS
 * Elección tipo

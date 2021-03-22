@@ -46,7 +46,7 @@ class _HealthAppointmentsState extends State<HealthAppointments> {
   int _contId = 4;
   int _bottomNavigationIndex = 0;
   // int _contId = 0;
-  String _gif = 'images/practice_GIF.gif';
+  String _gif = 'images/pending_appointments.gif';
 
   List<Appointment> presentAppointments = [
     Appointment(
@@ -262,7 +262,7 @@ class _GifAndButtonsState extends State<GifAndButtons> {
                   onDoubleTap: () => widget.topButtonFunction(context),
                 ),
                 onPressed: () {
-                  widget.gifFunction('Medicina general');
+                  widget.gifFunction('general_medicine');
                 },
               ),
               FloatingActionButton(
@@ -272,7 +272,7 @@ class _GifAndButtonsState extends State<GifAndButtons> {
                   onDoubleTap: () => null,
                 ),
                 onPressed: () {
-                  widget.gifFunction('Odontología');
+                  widget.gifFunction('odontology');
                 },
               ),
             ],

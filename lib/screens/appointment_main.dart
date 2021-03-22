@@ -15,7 +15,7 @@ class AppointmentMain extends StatefulWidget {
 }
 
 class _AppointmentMainState extends State<AppointmentMain> {
-  String gif = 'images/practice_GIF.gif';
+  String gif = 'images/pending_appointments.gif';
   Appointment appointment;
 
   void initState() {
