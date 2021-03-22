@@ -256,6 +256,7 @@ class _GifAndButtonsState extends State<GifAndButtons> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               FloatingActionButton(
+                heroTag: 'add_appointment',
                 elevation: 5,
                 child: GestureDetector(
                   child: widget.topButtonIcon,
@@ -266,6 +267,7 @@ class _GifAndButtonsState extends State<GifAndButtons> {
                 },
               ),
               FloatingActionButton(
+                heroTag: 'accept',
                 elevation: 5,
                 child: GestureDetector(
                   child: widget.bottomButtonIcon,
